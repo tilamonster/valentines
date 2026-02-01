@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine 💘</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family: Arial, sans-serif;
+    }
+
+    .card {
+      background: white;
+      width: 390px;
+      padding: 25px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 2;
+    }
+
+    .perrito {
+      width: 180px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .zona {
+      position: relative;
+      width: 100%;
+      height: 150px;
+    }
+
+    button {
+      padding: 18px 32px;
+      font-size: 20px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .yes {
+      background: #ff4d6d;
+      color: white;
+    }
+
+    .no {
+      position: absolute;
+      left: 220px;
+      top: 90px;
+      background: #ddd;
+    }
+
+    /* TU IMAGEN FINAL */
+    #yoFinal {
+      display: none;
+      width: 260px;
+      margin: 0 auto;
+      opacity: 0;
+      z-index: 2;
+    }
+
+    /* ANIMACIÓN */
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .animado {
+      animation: aparecer 1.2s ease-out forwards;
+    }
+
+    /* 🌹🎈 EMOJIS */
+    .emoji {
+      position: fixed;
+      top: -50px;
+      font-size: 36px;
+      animation: caer linear forwards;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes caer {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- AUDIO -->
+  <audio id="musica">
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="card">
+
+    <img id="perrito" src="perrito.jpg" class="perrito">
+
+    <h2 id="pregunta">Flaca… ¿querés ser mi Valentine? 💘</h2>
+
+    <div class="zona" id="zona">
+      <button class="yes" onclick="aceptar()">Sí 💕</button>
+      <button class="no" onclick="mover()">No 🙃</button>
+    </div>
+
+    <img id="yoFinal" src="yo.png">
+
+  </div>
+
+  <script>
+    let paso = 0;
+    let lluvia;
+
+    function mover() {
+      const btn = document.querySelector('.no');
+
+      const posiciones = [
+        { x: 20, y: 20 },
+        { x: 240, y: 20 },
+        { x: 240, y: 90 },
+        { x: 20, y: 90 }
+      ];
+
+      btn.style.left = posiciones[paso].x + "px";
+      btn.style.top  = posiciones[paso].y + "px";
+
+      paso = (paso + 1) % posiciones.length;
+    }
+
+    function aceptar() {
+      // 🎶 música inmediata
+      const musica = document.getElementById("musica");
+      musica.currentTime = 0;
+      musica.volume = 0.7;
+      musica.play();
+
+      document.getElementById("perrito").style.display = "none";
+      document.getElementById("pregunta").style.display = "none";
+      document.getElementById("zona").style.display = "none";
+
+      const yo = document.getElementById("yoFinal");
+      yo.style.display = "block";
+      yo.classList.add("animado");
+
+      // 🌹🎈 LLUVIA MÁS INTENSA
+      lluvia = setInterval(() => {
+        for (let i = 0; i < 3; i++) {
+          crearEmoji();
+        }
+      }, 200);
+    }
+
+    function crearEmoji() {
+      const emoji = document.createElement("div");
+      emoji.classList.add("emoji");
+
+      // MUCHAS más rosas y globos
+      const emojis = [
+        "🌹","🌹","🌹","🌹",
+        "🎈","🎈","🎈","🎈",
+        "💘"
+      ];
+
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.animationDuration = (Math.random() * 2 + 3) + "s";
+
+      document.body.appendChild(emoji);
+
+      setTimeout(() => {
+        emoji.remove();
+      }, 6000);
+    }
+  </script>
+
+</body>
+</html>
