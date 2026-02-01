@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Valentine 💘</title>
+  <meta charset="UTF-8" />
+  <title>Valentine 💖</title>
 
   <style>
     body {
@@ -18,90 +18,71 @@
 
     .card {
       background: white;
-      width: 390px;
       padding: 25px;
       border-radius: 25px;
       text-align: center;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      width: 380px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
       position: relative;
       z-index: 2;
     }
 
     .perrito {
-      width: 180px;
+      width: 160px;
       border-radius: 20px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     h2 {
-      font-size: 22px;
-      margin-bottom: 20px;
+      margin: 15px 0 25px;
     }
 
-    .zona {
+    .buttons {
       position: relative;
-      width: 100%;
-      height: 150px;
+      height: 70px;
     }
 
     button {
-      padding: 18px 32px;
-      font-size: 20px;
-      border-radius: 16px;
+      padding: 12px 22px;
+      font-size: 16px;
       border: none;
+      border-radius: 18px;
       cursor: pointer;
+      position: absolute;
     }
 
-    .yes {
+    #yesBtn {
       background: #ff4d6d;
       color: white;
+      left: 70px;
     }
 
-    .no {
-      position: absolute;
-      left: 220px;
-      top: 90px;
+    #noBtn {
       background: #ddd;
+      right: 70px;
     }
 
-    /* TU IMAGEN FINAL */
-    #yoFinal {
+    #final {
       display: none;
-      width: 260px;
-      margin: 0 auto;
-      opacity: 0;
-      z-index: 2;
+      text-align: center;
     }
 
-    /* ANIMACIÓN */
-    @keyframes aparecer {
-      from {
-        opacity: 0;
-        transform: scale(0.8);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    #final img {
+      width: 240px;
+      margin-top: 15px;
     }
 
-    .animado {
-      animation: aparecer 1.2s ease-out forwards;
-    }
-
-    /* 🌹🎈 EMOJIS */
     .emoji {
       position: fixed;
-      top: -50px;
-      font-size: 36px;
-      animation: caer linear forwards;
+      top: -40px;
+      font-size: 30px;
+      animation: fall linear forwards;
       z-index: 1;
-      pointer-events: none;
     }
 
-    @keyframes caer {
+    @keyframes fall {
       to {
-        transform: translateY(110vh);
+        transform: translateY(110vh) rotate(360deg);
         opacity: 0;
       }
     }
@@ -111,88 +92,57 @@
 <body>
 
   <!-- AUDIO -->
-  <audio id="musica">
-    <source src="musica.mp3" type="audio/mpeg">
-  </audio>
+  <audio id="music" src="musica.mp3"></audio>
 
-  <div class="card">
+  <div class="card" id="card">
+    <img src="perrito.jpg" class="perrito">
+    <h2>Flaca… ¿querés ser mi Valentine? 💘</h2>
 
-    <img id="perrito" src="perrito.jpg" class="perrito">
-
-    <h2 id="pregunta">Flaca… ¿querés ser mi Valentine? 💘</h2>
-
-    <div class="zona" id="zona">
-      <button class="yes" onclick="aceptar()">Sí 💕</button>
-      <button class="no" onclick="mover()">No 🙃</button>
+    <div class="buttons">
+      <button id="yesBtn">Sí 💖</button>
+      <button id="noBtn">No 😢</button>
     </div>
+  </div>
 
-    <img id="yoFinal" src="yo.png">
-
+  <div class="card" id="final">
+    <h2>MI MAYOR ANHELO 💞</h2>
+    <img src="yo.png">
   </div>
 
   <script>
-    let paso = 0;
-    let lluvia;
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const card = document.getElementById("card");
+    const final = document.getElementById("final");
+    const music = document.getElementById("music");
 
-    function mover() {
-      const btn = document.querySelector('.no');
+    // Botón NO huye en cuadrado
+    noBtn.addEventListener("mouseenter", () => {
+      const x = Math.random() * 200 - 100;
+      const y = Math.random() * 120 - 60;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    });
 
-      const posiciones = [
-        { x: 20, y: 20 },
-        { x: 240, y: 20 },
-        { x: 240, y: 90 },
-        { x: 20, y: 90 }
-      ];
+    // Al decir SÍ
+    yesBtn.addEventListener("click", () => {
+      card.style.display = "none";
+      final.style.display = "block";
 
-      btn.style.left = posiciones[paso].x + "px";
-      btn.style.top  = posiciones[paso].y + "px";
+      music.volume = 0.9;
+      music.play();
 
-      paso = (paso + 1) % posiciones.length;
-    }
+      setInterval(createEmoji, 120);
+    });
 
-    function aceptar() {
-      // 🎶 música inmediata
-      const musica = document.getElementById("musica");
-      musica.currentTime = 0;
-      musica.volume = 0.7;
-      musica.play();
-
-      document.getElementById("perrito").style.display = "none";
-      document.getElementById("pregunta").style.display = "none";
-      document.getElementById("zona").style.display = "none";
-
-      const yo = document.getElementById("yoFinal");
-      yo.style.display = "block";
-      yo.classList.add("animado");
-
-      // 🌹🎈 LLUVIA MÁS INTENSA
-      lluvia = setInterval(() => {
-        for (let i = 0; i < 3; i++) {
-          crearEmoji();
-        }
-      }, 200);
-    }
-
-    function crearEmoji() {
+    function createEmoji() {
       const emoji = document.createElement("div");
       emoji.classList.add("emoji");
-
-      // MUCHAS más rosas y globos
-      const emojis = [
-        "🌹","🌹","🌹","🌹",
-        "🎈","🎈","🎈","🎈",
-        "💘"
-      ];
-
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.textContent = Math.random() > 0.5 ? "🌹" : "🎈";
       emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (Math.random() * 2 + 3) + "s";
-
+      emoji.style.animationDuration = (3 + Math.random() * 3) + "s";
       document.body.appendChild(emoji);
 
-      setTimeout(() => {
-        emoji.remove();
-      }, 6000);
+      setTimeout(() => emoji.remove(), 6000);
     }
   </script>
 
