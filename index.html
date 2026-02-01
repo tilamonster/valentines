@@ -1,88 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Valentine 💖</title>
+  <meta charset="UTF-8">
+  <title>💘 Valentine</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
     body {
       margin: 0;
       height: 100vh;
-      overflow: hidden;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      font-family: Arial, sans-serif;
+      overflow: hidden;
     }
 
     .card {
       background: white;
+      width: 380px;
       padding: 25px;
       border-radius: 25px;
       text-align: center;
-      width: 380px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+      box-shadow: 0 15px 30px rgba(0,0,0,.2);
       position: relative;
       z-index: 2;
+      animation: aparecer .6s ease;
+    }
+
+    @keyframes aparecer {
+      from { transform: scale(.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .perrito {
-      width: 160px;
+      width: 170px;
       border-radius: 20px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     h2 {
-      margin: 15px 0 25px;
+      margin: 10px 0 20px;
     }
 
-    .buttons {
-      position: relative;
-      height: 70px;
+    .btns {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
     }
 
     button {
       padding: 12px 22px;
-      font-size: 16px;
+      font-size: 18px;
       border: none;
-      border-radius: 18px;
+      border-radius: 12px;
       cursor: pointer;
+    }
+
+    #yes {
+      background: #ff4d6d;
+      color: white;
+    }
+
+    #no {
+      background: #ddd;
       position: absolute;
     }
 
-    #yesBtn {
-      background: #ff4d6d;
-      color: white;
-      left: 70px;
-    }
-
-    #noBtn {
-      background: #ddd;
-      right: 70px;
-    }
-
+    /* pantalla final */
     #final {
       display: none;
+      position: absolute;
       text-align: center;
+      z-index: 2;
+      animation: aparecer .8s ease;
     }
 
     #final img {
-      width: 240px;
-      margin-top: 15px;
+      width: 260px;
     }
 
+    #final h1 {
+      color: white;
+      font-size: 36px;
+      margin-top: 20px;
+    }
+
+    /* emojis */
     .emoji {
-      position: fixed;
-      top: -40px;
-      font-size: 30px;
-      animation: fall linear forwards;
+      position: absolute;
+      top: -50px;
+      font-size: 32px;
+      animation: caer linear forwards;
       z-index: 1;
     }
 
-    @keyframes fall {
+    @keyframes caer {
       to {
-        transform: translateY(110vh) rotate(360deg);
+        transform: translateY(110vh);
         opacity: 0;
       }
     }
@@ -94,57 +113,67 @@
   <!-- AUDIO -->
   <audio id="music" src="musica.mp3"></audio>
 
+  <!-- TARJETA -->
   <div class="card" id="card">
     <img src="perrito.jpg" class="perrito">
     <h2>Flaca… ¿querés ser mi Valentine? 💘</h2>
 
-    <div class="buttons">
-      <button id="yesBtn">Sí 💖</button>
-      <button id="noBtn">No 😢</button>
+    <div class="btns">
+      <button id="yes">Sí 💖</button>
+      <button id="no">No 😢</button>
     </div>
   </div>
 
-  <div class="card" id="final">
-    <h2>MI MAYOR ANHELO 💞</h2>
+  <!-- FINAL -->
+  <div id="final">
     <img src="yo.png">
+    <h1>Te amo flaca 💖</h1>
   </div>
 
   <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
+    const yes = document.getElementById("yes");
+    const no = document.getElementById("no");
     const card = document.getElementById("card");
     const final = document.getElementById("final");
     const music = document.getElementById("music");
 
-    // Botón NO huye en cuadrado
-    noBtn.addEventListener("mouseenter", () => {
-      const x = Math.random() * 200 - 100;
-      const y = Math.random() * 120 - 60;
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    // botón NO se mueve en cuadrado
+    no.addEventListener("mouseover", () => {
+      const maxX = 260;
+      const maxY = 180;
+      const x = Math.random() * maxX - maxX / 2;
+      const y = Math.random() * maxY - maxY / 2;
+      no.style.transform = `translate(${x}px, ${y}px)`;
     });
 
-    // Al decir SÍ
-    yesBtn.addEventListener("click", () => {
+    // botón SÍ
+    yes.addEventListener("click", () => {
+
+      // 🎵 MÚSICA PRIMERO (CLAVE)
+      music.volume = 1;
+      music.currentTime = 0;
+      music.play();
+
+      // luego mostrar final
       card.style.display = "none";
       final.style.display = "block";
 
-      music.volume = 0.9;
-      music.play();
-
-      setInterval(createEmoji, 120);
+      // lluvia de emojis
+      setInterval(crearEmoji, 80);
     });
 
-    function createEmoji() {
+    function crearEmoji() {
       const emoji = document.createElement("div");
-      emoji.classList.add("emoji");
-      emoji.textContent = Math.random() > 0.5 ? "🌹" : "🎈";
+      emoji.className = "emoji";
+      emoji.innerText = Math.random() > 0.5 ? "🌹" : "🎈";
       emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (3 + Math.random() * 3) + "s";
+      emoji.style.animationDuration = 3 + Math.random() * 2 + "s";
       document.body.appendChild(emoji);
 
-      setTimeout(() => emoji.remove(), 6000);
+      setTimeout(() => emoji.remove(), 5000);
     }
   </script>
 
 </body>
 </html>
+
